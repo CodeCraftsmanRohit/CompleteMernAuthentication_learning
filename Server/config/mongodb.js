@@ -12,7 +12,7 @@ const connectDB = async () => {
 
   // Connect to MongoDB using the URI from the .env file + database name
   // ✅ Important: Use backticks and include the database name at the end of the URI
-  await mongoose.connect(`${process.env.MONGODB_URI}/mern-auth`);  //dollar mat bhulna
+  await mongoose.connect(`${process.env.MONGODB_URI}/mern-auth`);  //dollar mat bhulna,async	Allows use of await, returns a Promiseawait	Waits for mongoose.connect() to finish
 };
 
 // Export the function so it can be used in server.js
