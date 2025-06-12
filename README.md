@@ -12,5 +12,5 @@ step 4-> connect express with mongodb database
 
 step 5-> store user data in database by creating  user model
 
-step 6->to create a  user, create a controller function and using that we will create an api end point
-step 6.1 -> first create register controller function
+step 6->to create a  user, create a controller function and using that we will create an api end point,
+ step 6.1 -> first create register controller function
