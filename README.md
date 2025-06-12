@@ -1,6 +1,6 @@
 # CompleteMernAuthentication_learning
 
-Install :> express,cors,dotenv,nodemon,jsonwebtoken,mongoose,bcryptjs,nodemailer,cookie-parser
+        Install :> express,cors,dotenv,nodemon,jsonwebtoken,mongoose,bcryptjs,nodemailer,cookie-parser.
 
 step 1-> setup server using express
 
