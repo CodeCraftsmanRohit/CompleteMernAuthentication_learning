@@ -17,3 +17,13 @@ step 6->to create a  user, create a controller function(authController.js) and u
  step 6.1 -> first create register controller function
 
  step6.2 -> when user is cretaed and saved in DB , next we have to generate token(using id from mongodb DB) for authentication and send this using cookie.
+
+ step 6.3 -> then create login and logout controller function  (logout me token remove hoga!)
+
+ step 7 -> create api end point using controller function, for that we'll create routes
+
+ step 8-> test apis using postman
+
+ step 9 -> add nodemailer.js,we need smtp details to send the mail,use brevo smtp!!
+
+ step 10-> create verifyOTP controller function

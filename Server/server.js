@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 
 // Import custom function to connect to MongoDB
 import connectDB from "./config/mongodb.js";
+import authRouter from './routes/authRoutes.js';
 
 // Initialize the Express application
 const app = express();
@@ -31,10 +32,14 @@ app.use(cookieParser());
 // Enable CORS and allow credentials (cookies, auth headers) in cross-origin requests
 app.use(cors({ credentials: true }));
 
+
+//API ENDPOINTS
+
 // Define a simple GET route at the root URL ('/') that returns a test response
 app.get('/', (req, res) => {
   return res.send("API Working");
 });
+app.use('/api/auth',authRouter)
 
 // Start the server and listen on the specified port, logging a confirmation message when ready
 app.listen(port, () => console.log(`Server started on PORT:${port}`));
