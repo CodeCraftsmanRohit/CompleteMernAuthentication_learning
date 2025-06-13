@@ -27,3 +27,9 @@ step 6->to create a  user, create a controller function(authController.js) and u
  step 9 -> add nodemailer.js,we need smtp details to send the mail,use brevo smtp!!
 
  step 10-> create sendverifyOTP controller function and then verifyEmail controller function
+
+ step 11-> need a middleware as user is only sending otp but we want userId and otp.(we r getting userdId from token and token is stored in cookie)(need a middleware to do work as a intermediator)
+
+ step 12-> test send-verify-otp and verify-account api using postman
+
+ step 13 -> add isAuthenticated controller function
