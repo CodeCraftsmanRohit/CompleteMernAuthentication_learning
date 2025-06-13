@@ -143,30 +143,82 @@ export const logout = async (req, res) => {
   }
 };
 
-//send verification OTP to the User's Email
+// Send verification OTP to user's email
 export const sendVerifyOtp = async (req, res) => {
   try {
     const { userId } = req.body;
+
+    // Find user by ID
     const user = await usermodel.findById(userId);
+
+    // If already verified
     if (user.isAccountVerified) {
       return res.json({ success: false, message: "Account Already Verified" });
     }
 
+    // Generate 6-digit OTP
     const otp = String(Math.floor(100000 + Math.random() * 900000));
 
+    // Save OTP and expiry to user record
     user.verifyOtp = otp;
-    user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
+    user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
     await user.save();
+
+    // Email the OTP
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
-      to: email,
+      to: user.email, // ✅ fixed this
       subject: "Account Verification OTP",
-      text: `Your OTP is ${otp}.Verify your account using this OTP`,
+      text: `Your OTP is ${otp}. Verify your account using this OTP.`,
     };
     await transporter.sendMail(mailOptions);
-    res.json({success:true,message:'Verification OTP Sent on Email'})
+
+    res.json({ success: true, message: "Verification OTP Sent on Email" });
   } catch (error) {
     res.json({ success: false, message: error.message });
+  }
+};
+
+
+// Handle email verification using OTP
+export const verifyEmail = async (req, res) => {
+  const { userId, otp } = req.body;
+
+  // Validate required fields
+  if (!userId || !otp) {
+    return res.json({ success: false, message: "Missing Details" });
+  }
+
+  try {
+    // Find user by ID
+    const user = await usermodel.findById(userId);
+
+    // If user not found
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    // Validate OTP
+    if (user.verifyOtp === "" || user.verifyOtp !== otp) {
+      return res.json({ success: false, message: "Invalid OTP" });
+    }
+
+    // Check for OTP expiry
+    if (user.verifyOtpExpireAt < Date.now()) {
+      return res.json({ success: false, message: "OTP Expired" });
+    }
+
+    // Mark user as verified and clear OTP fields
+    user.isAccountVerified = true;
+    user.verifyOtp = "";
+    user.verifyOtpExpireAt = 0;
+
+    await user.save();
+
+    // Return success response
+    return res.json({ success: true, message: "Email Verified Successfully" });
+  } catch (error) {
+    return res.json({ success: false, message: error.message }); // ✅ fixed typo `red.json` ➝ `res.json`
   }
 };
