@@ -2,6 +2,10 @@
 
         Install :> express,cors,dotenv,nodemon,jsonwebtoken,mongoose,bcryptjs,nodemailer,cookie-parser.
 
+
+************************Backend********************
+
+
 step 1-> setup server using express
 
 step 2-> create .env file
@@ -14,7 +18,7 @@ step 5-> store user data in database by creating  user model
 
 step 6->to create a  user, create a controller function(authController.js) and using that ,after, we will create an api end point,
 
- step 6.1 -> first create register controller function
+ step 6.1 -> first create register controller function in authController.js
 
  step6.2 -> when user is cretaed and saved in DB , next we have to generate token(using id from mongodb DB) for authentication and send this using cookie.
 
@@ -33,3 +37,7 @@ step 6->to create a  user, create a controller function(authController.js) and u
  step 12-> test send-verify-otp and verify-account api using postman
 
  step 13 -> add isAuthenticated controller function
+
+ step 14 -> create sendResetOtp controller function and resetpassword controller then create api end point
+
+step 15 -> create userController and userRoutes to get userdata

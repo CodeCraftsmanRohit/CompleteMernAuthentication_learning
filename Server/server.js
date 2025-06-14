@@ -13,6 +13,7 @@ import cookieParser from "cookie-parser";
 // Import custom function to connect to MongoDB
 import connectDB from "./config/mongodb.js";
 import authRouter from './routes/authRoutes.js';
+import userRouter from './routes/userRoutes.js';
 
 // Initialize the Express application
 const app = express();
@@ -40,6 +41,7 @@ app.get('/', (req, res) => {
   return res.send("API Working");
 });
 app.use('/api/auth',authRouter)
+app.use('/api/user',userRouter)
 
 // Start the server and listen on the specified port, logging a confirmation message when ready
 app.listen(port, () => console.log(`Server started on PORT:${port}`));

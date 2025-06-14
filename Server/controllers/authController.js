@@ -234,4 +234,85 @@ return res.json({success:true})
     return res.json({success:false,message:error.message})
 
   }
+};
+
+export const sendResetOtp=async(req,res)=>{
+  const {email}=req.body;
+
+  if(!email){
+    return res.json({success:false,message:'Email is required'})
+  }
+
+  try {
+
+    const user=await usermodel.findOne({email});
+     if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });}
+       // Generate 6-digit OTP
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+    // Save OTP and expiry to user record
+    user.resetOtp = otp;
+    user.resetOtpExpireAt = Date.now() + 15 * 60 * 1000;
+
+    await user.save();
+
+    // Email the OTP
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: user.email, // ✅ fixed this
+      subject: "PassWord Reset OTP",
+      text: `Your OTP is ${otp}. Use this to proceed to resetting your password`,
+    };
+    await transporter.sendMail(mailOptions);
+
+    res.json({ success: true, message: "Reset Password OTP Sent on Email" });
+
+    }
+
+   catch(error) {
+    return res.json({success:false,message:error.message})
+  }
+
+
+}
+
+export const resetpassword  =async(req,res)=>{
+
+  const {email,otp,newPassword}=req.body;
+
+  if(!email ||!otp ||!newPassword){
+    return res.json({success :false,message:'Email,Otp,New Password are required'})
+  }
+
+  try {
+
+    const user=await usermodel.findOne({email});
+    if(!user){
+            return res.status(404).json({ success: false, message: "User not found" });
+
+    }
+
+    if(user.resetOtp===""|| user.resetOtp!==otp){
+      return res.json({success:false,message:'Invalid OTP'})
+    }
+    if(user.resetOtpExpireAt<Date.now()){
+      return res.json({succ:false,message:'OTP expired'})
+
+    }
+    const hashedPassword=await bcrypt.hash(newPassword,10);
+    user.password=hashedPassword;
+    user.resetOtp=''
+    user.resetOtpExpireAt=0
+
+    await user.save();
+
+    return res.json({success:true,message:'Password has been reset successfully'})
+
+  } catch (error) {
+        return res.json({success:false,message:error.message})
+
+  }
+
+
 }
