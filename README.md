@@ -46,3 +46,5 @@ step 15 -> create userController and userRoutes to get userdata
 
 
 *************************************************
+
+Deployed on Render :https://mernauthentication-9xsp.onrender.com/
