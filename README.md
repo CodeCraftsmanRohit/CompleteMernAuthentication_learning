@@ -46,4 +46,3 @@ step 15 -> create userController and userRoutes to get userdata
 
 
 *************************************************
-  Deployed on Render :https://authentication-kcyw.onrender.com/
