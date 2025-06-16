@@ -41,3 +41,9 @@ step 6->to create a  user, create a controller function(authController.js) and u
  step 14 -> create sendResetOtp controller function and resetpassword controller then create api end point
 
 step 15 -> create userController and userRoutes to get userdata
+
+
+
+
+*************************************************
+  Deployed on Render :https://authentication-kcyw.onrender.com/
