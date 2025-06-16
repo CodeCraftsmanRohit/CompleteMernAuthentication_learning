@@ -60,6 +60,8 @@ export const register = async (req, res) => {
       text: `Welcome to my website . your account has been created with email id:${email}`,
     };
     await transporter.sendMail(mailOptions);
+      // ✅ Add success log
+    console.log(`✅ User registered: ${email} (${name})`);
 
     // ✅ Send a success response with user info (excluding password)
     res.json({
@@ -114,6 +116,9 @@ export const login = async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+        // ✅ Add login success log
+    console.log(`✅ User logged in: ${email}`);
+
 
     // Respond with success message
     res.json({
@@ -277,42 +282,48 @@ export const sendResetOtp=async(req,res)=>{
 
 }
 
-export const resetpassword  =async(req,res)=>{
 
-  const {email,otp,newPassword}=req.body;
+export const resetpassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
 
-  if(!email ||!otp ||!newPassword){
-    return res.json({success :false,message:'Email,Otp,New Password are required'})
+  if (!email || !otp || !newPassword) {
+    return res.status(400).json({ success: false, message: 'Email, OTP, and new password are required' });
   }
 
   try {
-
-    const user=await usermodel.findOne({email});
-    if(!user){
-            return res.status(404).json({ success: false, message: "User not found" });
-
+    const user = await usermodel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    if(user.resetOtp===""|| user.resetOtp!==otp){
-      return res.json({success:false,message:'Invalid OTP'})
+    if (!user.resetOtp || user.resetOtp !== otp) {
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
     }
-    if(user.resetOtpExpireAt<Date.now()){
-      return res.json({succ:false,message:'OTP expired'})
 
+    if (user.resetOtpExpireAt < Date.now()) {
+      return res.status(400).json({ success: false, message: 'OTP expired' });
     }
-    const hashedPassword=await bcrypt.hash(newPassword,10);
-    user.password=hashedPassword;
-    user.resetOtp=''
-    user.resetOtpExpireAt=0
+
+    // Hash and update password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.resetOtp = '';
+    user.resetOtpExpireAt = 0;
+
+    // ✅ Send new token after successful password reset
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Set to true in production
+      sameSite: "Lax",
+    });
 
     await user.save();
 
-    return res.json({success:true,message:'Password has been reset successfully'})
+    return res.status(200).json({ success: true, message: "Password reset successful" });
 
   } catch (error) {
-        return res.json({success:false,message:error.message})
-
+    console.error("Reset Password Error:", error);
+    return res.status(500).json({ success: false, message: "Server error. Please try again." });
   }
-
-
-}
+};

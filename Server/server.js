@@ -30,8 +30,11 @@ app.use(express.json());
 // Middleware to parse cookies from request headers and populate `req.cookies`
 app.use(cookieParser());
 
+
+const aloowedOrigins =['http://localhost:5173']
+
 // Enable CORS and allow credentials (cookies, auth headers) in cross-origin requests
-app.use(cors({ credentials: true }));
+app.use(cors({origin:aloowedOrigins, credentials: true }));
 
 
 //API ENDPOINTS
