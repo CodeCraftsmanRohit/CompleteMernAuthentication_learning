@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-const aloowedOrigins =['http://localhost:5173']
+const aloowedOrigins =['http://localhost:5173','https://mernauthentication-9xsp.onrender.com']
 
 // Enable CORS and allow credentials (cookies, auth headers) in cross-origin requests
 app.use(cors({origin:aloowedOrigins, credentials: true }));
